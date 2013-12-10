@@ -14,10 +14,21 @@ var sendResponse = function(req, res, data) {
   res.end(data);
 }
 
-var fetchUrls = function(req, res, filePath) {
+var fetchUrls = function(req, res) {
+  // check to see if the requested url exists, otherwise serve up index.html
+  if (req.url === '/') {
+    status = 200;
+    var filePath = exports.indexdir;
+  } else if (req.url === '/www.google.com') {
+    status = 200;
+    var filePath = exports.sitesdir.concat(req.url);
+  } else {
+    status = 404;
+    var filePath = exports.indexdir;
+  }
+
   fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) throw err; // this may need to be revised to account for chunking of larger data
-    status = 200;
     sendResponse(req, res, data);
   });
 }
@@ -57,12 +68,19 @@ var storedUrls = {
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
-  if (req.method === 'GET' && req.url === '/') { // this will serve our site's html page
-    actionList[req.method](req, res, exports.indexdir);
-  } else if (req.method === 'GET' && storedUrls[req.url] === true) {
-    actionList[req.method](req, res, exports.sitesdir + req.url);
-  } else if (req.method === 'GET') {
-    actionList[req.method](req, res, exports.indexdir);
+  // // if accessing homepage, serve up index.html
+  // if (actionList[req.method] && req.url === '/'){
+  //   actionList[req.method](req, res, exports.indexdir);
+  // // if accessing another url, serve up that url
+  // } else if (actionList[req.method]) { // still need to add a test to see if that url exists (otherwise serve up the homepage)
+  //   actionList[req.method](req, res, exports.sitesdir + req.url);
+  // } else {
+  //   status = 404;
+  //   sendResponse(req, res);
+  // }
+
+  if (req.method === 'GET') {
+    actionList[req.method](req, res);
   } else if (req.method === 'POST') {
     actionList[req.method](req, res, exports.datadir);
   } else {
