@@ -11,15 +11,14 @@ module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
   var filePath = exports.datadir;
-  var dataToSend = htmlFetcherHelpers.readUrls( filePath );
+
+  var data;
 
   fs.readFile(filePath, 'utf8', function (err, data) {
-    if (err) throw err;
-    console.log('data is', data);
-    dataToSend = data; // this may need to be revised to account for chunking of larger data
-
+    if (err) throw err; // this may need to be revised to account for chunking of larger data
+    data = data;
     res.writeHead(status, httpHelpers.headers);
-    res.end(dataToSend);
+    res.end(data);
   });
 
 };
