@@ -5,7 +5,7 @@ var htmlFetcherHelpers = require('../workers/lib/html-fetcher-helpers.js');
 
 module.exports.indexdir = path.join(__dirname, "./public/index.html")
 module.exports.datadir = path.join(__dirname, "../data/sites.txt"); // tests will need to override this.
-// module.exports.sitesDir = path.join(__dirname, "../data/sites/");
+module.exports.sitesdir = path.join(__dirname, "../data/sites");
 
 var status = 200;
 
@@ -50,10 +50,10 @@ var actionList = {
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
-  if (req.method === 'GET' && req.url === '/') { // this will serve up the html page
-    actionList[req.method](req,res, exports.indexdir);
+  if (req.method === 'GET' && req.url === '/') { // this will serve our site's html page
+    actionList[req.method](req, res, exports.indexdir);
   } else if (req.method === 'GET') {
-    actionList[req.method](req, res, exports.datadir);
+    actionList[req.method](req, res, exports.sitesdir + req.url);
   } else if (req.method === 'POST') {
     actionList[req.method](req, res, exports.datadir);
   } else {
