@@ -20,16 +20,18 @@ var fetchUrls = function(req, res, filePath) {
 
 var addUrls = function(req, res, filePath) {
   var body = '';
+
   req.on('data', function(chunk) {
     body += chunk;
   });
+
   req.on('end', function() {
-    console.log('==========body is========',body);
-    fs.writeFile(filePath, body, 'utf8', function(err){
+    body += '\n';
+    fs.appendFile(filePath, body, function(err){
       if (err) throw err;
       status = 302;
       res.writeHead(status, httpHelpers.headers);
-      res.end(body);
+      res.end();
     });
   });
 }
@@ -42,11 +44,10 @@ var actionList = {
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
-
   if (req.method === 'GET' && req.url === '/') { // this will serve up the html page
     actionList[req.method](req,res, exports.indexDir);
   } else if (req.method === 'GET') {
-    console.log('req.method for GET only fired');
+    console.log('req.method for GET-only fired');
     actionList[req.method](req, res, exports.datadir);
   } else if (req.method === 'POST') {
     actionList[req.method](req, res, exports.datadir);
