@@ -13,24 +13,13 @@ module.exports.handleRequest = function (req, res) {
   var filePath = exports.datadir;
   var dataToSend = htmlFetcherHelpers.readUrls( filePath );
 
-
-
-  var fileContents;
-
   fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) throw err;
     console.log('data is', data);
-    fileContents = data; // this may need to be revised to account for chunking of larger data
+    dataToSend = data; // this may need to be revised to account for chunking of larger data
+
+    res.writeHead(status, httpHelpers.headers);
+    res.end(dataToSend);
   });
 
-  console.log(fileContents);
-
-
-
-
-
-  res.writeHead(status, httpHelpers.headers);
-  res.end(dataToSend);
-
-  console.log("res._data is ", res._data);
 };
