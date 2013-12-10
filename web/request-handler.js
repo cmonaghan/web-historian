@@ -3,7 +3,7 @@ var httpHelpers = require('./http-helpers.js');
 var fs = require('fs');
 var htmlFetcherHelpers = require('../workers/lib/html-fetcher-helpers.js');
 
-module.exports.indexdir = path.join(__dirname, "./public/index.html")
+module.exports.indexdir = path.join(__dirname, "./public/index.html");
 module.exports.datadir = path.join(__dirname, "../data/sites.txt"); // tests will need to override this.
 module.exports.sitesdir = path.join(__dirname, "../data/sites");
 
@@ -47,16 +47,32 @@ var actionList = {
   'POST': addUrls
 }
 
+var storedUrls = {
+  '/www.google.com': true
+}
+
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
   if (req.method === 'GET' && req.url === '/') { // this will serve our site's html page
     actionList[req.method](req, res, exports.indexdir);
-  } else if (req.method === 'GET') {
+  } else if (req.method === 'GET' && storedUrls[req.url] === true) {
     actionList[req.method](req, res, exports.sitesdir + req.url);
+  } else if (req.method === 'GET') {
+    actionList[req.method](req, res, exports.indexdir);
   } else if (req.method === 'POST') {
     actionList[req.method](req, res, exports.datadir);
   } else {
     // TODO: Options, 404
   }
 };
+
+
+
+
+
+
+
+
+
+
