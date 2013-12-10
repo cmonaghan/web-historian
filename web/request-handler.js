@@ -7,14 +7,18 @@ module.exports.indexdir = path.join(__dirname, "./public/index.html");
 module.exports.datadir = path.join(__dirname, "../data/sites.txt"); // tests will need to override this.
 module.exports.sitesdir = path.join(__dirname, "../data/sites");
 
-var status = 200;
+var status = 404;
+
+var sendResponse = function(req, res, data) {
+  res.writeHead(status, httpHelpers.headers);
+  res.end(data);
+}
 
 var fetchUrls = function(req, res, filePath) {
   fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) throw err; // this may need to be revised to account for chunking of larger data
     status = 200;
-    res.writeHead(status, httpHelpers.headers);
-    res.end(data);
+    sendResponse(req, res, data);
   });
 }
 
@@ -36,8 +40,7 @@ var addUrls = function(req, res, filePath) {
     fs.appendFile(filePath, body, function(err){
       if (err) throw err;
       status = 302;
-      res.writeHead(status, httpHelpers.headers);
-      res.end(indexHtml);
+      sendResponse(req, res, indexHtml);
     });
   });
 };
