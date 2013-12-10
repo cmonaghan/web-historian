@@ -10,13 +10,22 @@ var status = 200;
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
-  var filepath = exports.datadir;
-  var dataToSend = htmlFetcherHelpers.readUrls( filepath );
+  var filePath = exports.datadir;
+  var dataToSend = htmlFetcherHelpers.readUrls( filePath );
 
-  fs.readFile(filepath, 'utf8', function (err, data) {
+
+
+  var fileContents;
+
+  fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) throw err;
-    console.log('data of our new readFile is', data);
+    console.log('data is', data);
+    fileContents = data; // this may need to be revised to account for chunking of larger data
   });
+
+  console.log(fileContents);
+
+
 
 
 
