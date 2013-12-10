@@ -26,15 +26,21 @@ var addUrls = function(req, res, filePath) {
   });
 
   req.on('end', function() {
+    console.log('POSTed: ' + body);
+
+    // store indexHtml so it can be passed into res.end() below
+    var indexHtml = fetchUrls(req, res, exports.indexDir);
     body += '\n';
+
+
     fs.appendFile(filePath, body, function(err){
       if (err) throw err;
       status = 302;
       res.writeHead(status, httpHelpers.headers);
-      res.end();
+      res.end(indexHtml);
     });
   });
-}
+};
 
 var actionList = {
   'GET': fetchUrls,
