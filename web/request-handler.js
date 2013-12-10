@@ -41,12 +41,13 @@ var addUrls = function(req, res, filePath) {
   });
 
   req.on('end', function() {
+
+    body = body.slice(4); // this deletes the initial 'url=' included before each url
     console.log('POSTed: ' + body);
 
     // store indexHtml so it can be passed into res.end() below
     var indexHtml = fetchUrls(req, res, exports.indexdir);
     body += '\n';
-
 
     fs.appendFile(filePath, body, function(err){
       if (err) throw err;
@@ -67,17 +68,6 @@ var storedUrls = {
 
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
-
-  // // if accessing homepage, serve up index.html
-  // if (actionList[req.method] && req.url === '/'){
-  //   actionList[req.method](req, res, exports.indexdir);
-  // // if accessing another url, serve up that url
-  // } else if (actionList[req.method]) { // still need to add a test to see if that url exists (otherwise serve up the homepage)
-  //   actionList[req.method](req, res, exports.sitesdir + req.url);
-  // } else {
-  //   status = 404;
-  //   sendResponse(req, res);
-  // }
 
   if (req.method === 'GET') {
     actionList[req.method](req, res);
