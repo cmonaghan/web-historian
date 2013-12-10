@@ -39,7 +39,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should accept posts to /", function() {
+  it("Should accept posts to /", function() {
     fs.writeFileSync(handler.datadir, ""); // reset the test file
 
     var url = "www.example.com";

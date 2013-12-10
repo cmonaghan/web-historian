@@ -15,13 +15,24 @@ var fetchUrls = function(req, res, filePath) {
   });
 }
 
-var sendServerResponse = function(req, res) {
+var addUrls = function(req, res) {
+  // do some stuff
+}
 
+var actionList = {
+  'GET': fetchUrls,
+  'POST': addUrls
 }
 
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
-  fetchUrls(req, res, exports.datadir);
 
+  if (req.method === 'GET') {
+    actionList[req.method](req, res, exports.datadir);
+  } else if (req.method === 'POST') {
+    actionList[req.method](xxx, yyy, zzz);
+  } else {
+    // TODO: Options, 404
+  }
 };
