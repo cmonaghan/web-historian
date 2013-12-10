@@ -7,18 +7,21 @@ module.exports.datadir = path.join(__dirname, "../data/sites.txt"); // tests wil
 
 var status = 200;
 
-module.exports.handleRequest = function (req, res) {
-  console.log("Serving request type " + req.method + " for url " + req.url);
-
-  var filePath = exports.datadir;
-
-  var data;
-
+var fetchUrls = function(req, res, filePath) {
   fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) throw err; // this may need to be revised to account for chunking of larger data
-    data = data;
     res.writeHead(status, httpHelpers.headers);
     res.end(data);
   });
+}
+
+var sendServerResponse = function(req, res) {
+
+}
+
+module.exports.handleRequest = function (req, res) {
+  console.log("Serving request type " + req.method + " for url " + req.url);
+
+  fetchUrls(req, res, exports.datadir);
 
 };
