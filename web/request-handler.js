@@ -3,9 +3,9 @@ var httpHelpers = require('./http-helpers.js');
 var fs = require('fs');
 var htmlFetcherHelpers = require('../workers/lib/html-fetcher-helpers.js');
 
+module.exports.indexdir = path.join(__dirname, "./public/index.html")
 module.exports.datadir = path.join(__dirname, "../data/sites.txt"); // tests will need to override this.
-
-module.exports.indexDir = path.join(__dirname, "./public/index.html")
+// module.exports.sitesDir = path.join(__dirname, "../data/sites/");
 
 var status = 200;
 
@@ -29,7 +29,7 @@ var addUrls = function(req, res, filePath) {
     console.log('POSTed: ' + body);
 
     // store indexHtml so it can be passed into res.end() below
-    var indexHtml = fetchUrls(req, res, exports.indexDir);
+    var indexHtml = fetchUrls(req, res, exports.indexdir);
     body += '\n';
 
 
@@ -51,9 +51,8 @@ module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
   if (req.method === 'GET' && req.url === '/') { // this will serve up the html page
-    actionList[req.method](req,res, exports.indexDir);
+    actionList[req.method](req,res, exports.indexdir);
   } else if (req.method === 'GET') {
-    console.log('req.method for GET-only fired');
     actionList[req.method](req, res, exports.datadir);
   } else if (req.method === 'POST') {
     actionList[req.method](req, res, exports.datadir);
