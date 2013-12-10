@@ -33,7 +33,8 @@ var fetchUrls = function(req, res) {
   });
 }
 
-var addUrls = function(req, res, filePath) {
+var addUrls = function(req, res) {
+  var filePath = exports.datadir;
   var body = '';
 
   req.on('data', function(chunk) {
@@ -57,24 +58,24 @@ var addUrls = function(req, res, filePath) {
   });
 };
 
+var sendRequestFailure = function(req, res) {
+  status = 404;
+  sendResponse(req, res);
+};
+
 var actionList = {
   'GET': fetchUrls,
-  'POST': addUrls
-}
-
-var storedUrls = {
-  '/www.google.com': true
+  'POST': addUrls,
+  'failure': sendRequestFailure
 }
 
 module.exports.handleRequest = function (req, res) {
   console.log("Serving request type " + req.method + " for url " + req.url);
 
-  if (req.method === 'GET') {
+  if (actionList[req.method]) {
     actionList[req.method](req, res);
-  } else if (req.method === 'POST') {
-    actionList[req.method](req, res, exports.datadir);
   } else {
-    // TODO: Options, 404
+    actionList['failure'](req, res);
   }
 };
 
